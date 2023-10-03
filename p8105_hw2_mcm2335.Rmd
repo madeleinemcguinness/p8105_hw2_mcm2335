@@ -13,6 +13,6 @@ library(tidyverse)
 ## Set Up
 ```{r}
 #set working directory
-setwd("~/Users/robynrehak/Desktop/R_Building_Blocks_P8105/p8105_hw2_mcm2335")
+setwd("~/Desktop/R_Building_Blocks_P8105/p8105_hw2_mcm2335")
 ```
 
