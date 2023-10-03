@@ -10,3 +10,6 @@ Imported data tables into project & reknit to github document
 
 Cleaned up 'pols_month' dataset to produce 'pols_month_final'
 Steps: separated month variable, converted month numbers into month names, mutated new 'president' variable and deleted prez_gop, prez_dem, and day variables. Confirmed knit works correctly.
+
+Cleaned up 'snp' dataset to produce 'snp_final' dataset.
+Steps: separated date variable into 'year', 'month', and 'day' variables and arranged by 'year', 'month'. Confirmed knit works correctly.
