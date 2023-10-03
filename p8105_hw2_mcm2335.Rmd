@@ -16,3 +16,16 @@ library(tidyverse)
 setwd("~/Desktop/R_Building_Blocks_P8105/p8105_hw2_mcm2335")
 ```
 
+## Import Data Tables
+```{r}
+pols_month = read_csv(file = "./data/pols-month.csv")
+
+unemployment = read_csv(file = "./data/unemployment.csv")
+
+snp = read_csv(file = "./data/snp.csv")
+```
+
+## Clean Data Table
+```{r}
+```
+
