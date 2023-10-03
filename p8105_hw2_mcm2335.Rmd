@@ -8,6 +8,7 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(readxl)
 ```
 
 ## Set Up
@@ -16,7 +17,7 @@ library(tidyverse)
 setwd("~/Desktop/R_Building_Blocks_P8105/p8105_hw2_mcm2335")
 ```
 
-## Import Data Tables
+## Import CSV Data Tables
 ```{r}
 pols_month = read_csv(file = "./data/pols-month.csv")
 
@@ -25,7 +26,25 @@ unemployment = read_csv(file = "./data/unemployment.csv")
 snp = read_csv(file = "./data/snp.csv")
 ```
 
-## Clean Data Table
+## Clean Data Table: Pols-month
 ```{r}
-```
+names(pols_month) # names look clean
 
+pols_month_2 <- pols_month |>
+  separate(col = mon, into=c('year', 'month', 'day', sep='-')) #sep mon column
+
+pols_month_2 <- pols_month_2 |>
+  select(-'-') #remove '-' column
+
+pols_month_2 <- pols_month_2 |>
+  mutate(month = if_else(month == "01", "January", if_else(month == "02", "February", if_else(month == "03", "March", if_else(month == "04", "April", if_else(month == "05", "May", if_else(month == "06", "June", if_else(month == "07", "July", if_else(month == "08", "August", if_else(month == "09", "September", if_else(month == "10", "October", if_else(month == "11", "November", "December")))))))))))) #mutate month numbers to month names
+
+pols_month_2 <- pols_month_2 |>
+  mutate(president = if_else(prez_dem == 1, "dem", if_else(prez_gop == 1, "gop", NA_character_))) # new president value using prez_dem and prez_gop
+
+pols_month_3 <- pols_month_2 |>
+  select(-prez_dem, -prez_gop) # remove prez_dem and prez_gop variables
+
+pols_month_final <- pols_month_3 |>
+  select(-day) # remove day variable
+```
