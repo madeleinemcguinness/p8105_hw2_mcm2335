@@ -13,3 +13,5 @@ Steps: separated month variable, converted month numbers into month names, mutat
 
 Cleaned up 'snp' dataset to produce 'snp_final' dataset.
 Steps: separated date variable into 'year', 'month', and 'day' variables and arranged by 'year', 'month'. Confirmed knit works correctly.
+
+Fixed up pols and snp datasets for consistency accross datasets (transformed year variable to be 4 digits instead of 2 digits and ensured that all year variables were of the same class for merging) and tidied the unemployment dataset. Merged all 3 data sets into 'combined_data_final.' Wrote inline R code but am having difficulty knitting.
