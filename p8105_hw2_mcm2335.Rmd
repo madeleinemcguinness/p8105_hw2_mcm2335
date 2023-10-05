@@ -107,3 +107,50 @@ The `pols_month_final` dataset has `r nrow(pols_month_final)` observations and `
 
 ## Question 2 
 
+## Import Excel Data Table, Tidy, Mutate New Variables
+
+```{r}
+mr_trash_wheel = readxl::read_excel("./data/202309 Trash Wheel Collection Data.xlsx", sheet ='Mr. Trash Wheel', range = cell_rows(2:586)) |>
+  mutate(source = "mr_trash_wheel") |>
+  janitor::clean_names() |>
+  transform(year = as.numeric(year)) |>
+  select(-x15, -x16, -sports_balls) #excluded non-data rows by only reading in 2:586, removed non-dumspter variables (x15,x16, sports_balls), mutated source variable for merging later on, cleaned names
+
+mr_trash_wheel <- mr_trash_wheel |>
+  mutate(homes_powered_new = (weight_tons*500)/30)
+
+professor_trash_wheel = readxl::read_excel("./data/202309 Trash Wheel Collection Data.xlsx", sheet ='Professor Trash Wheel', range = cell_rows(2:108)) |>
+  mutate(source = "prof_trash_wheel") |>
+  janitor::clean_names()#excluded non-data rows by only reading in 2:108, mutated source variable for merging later on, cleaned names
+
+professor_trash_wheel <- professor_trash_wheel |>
+  mutate(homes_powered_new = (weight_tons*500)/30)
+  
+gwynnda_trash_wheel = readxl::read_excel("./data/202309 Trash Wheel Collection Data.xlsx", sheet ='Gwynnda Trash Wheel', range = cell_rows(2:157)) |>
+  mutate(source = "gwynnda_trash_wheel") |>
+  janitor::clean_names()#excluded non-data rows by only reading in 2:157, removed non-dumspter variables (x15,x16, sports_balls), mutated source variable for merging later on, cleaned names. There are two rows for dumpster 21, and thus there are 155 obs but 154 dumpsters
+
+gwynnda_trash_wheel <- gwynnda_trash_wheel |>
+  mutate(homes_powered_new = (weight_tons*500)/30)
+
+```
+
+## Merging Data Sets
+
+```{r}
+trash_wheel_combined = bind_rows(mr_trash_wheel, professor_trash_wheel, gwynnda_trash_wheel) #combined all datasets by common columns
+```
+
+## Analysis of Data Sets
+```{r}
+weight <- trash_wheel_combined |>
+  group_by(source) |>
+  summarise(sum(weight_tons)) # total weight of trash from professor trash wheel = 216 tons
+
+cigbutts <- trash_wheel_combined |>
+  filter(source == "gwynnda_trash_wheel" & year == 2021 & month == "July")|>
+  summarise(sum(cigarette_butts)) # total cig butts collected in July of 2021 by Gwynnda was 16,300 cig butts
+
+```
+
+## Question 3
