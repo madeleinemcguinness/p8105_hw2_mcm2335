@@ -17,3 +17,7 @@ Steps: separated date variable into 'year', 'month', and 'day' variables and arr
 Fixed up pols and snp datasets for consistency accross datasets (transformed year variable to be 4 digits instead of 2 digits and ensured that all year variables were of the same class for merging) and tidied the unemployment dataset. Merged all 3 data sets into 'combined_data_final.' Wrote inline R code but am having difficulty knitting.
 
 Imported Trash Wheels excel file into data folder, and three sheets into R: mr. trash wheel, prof trash wheel, and gwynnda trash wheel. Tidied data sets and mutated new homes_powered variable. Merged all 3 data sets using bind_rows and preserved all columns and observations. Conducted analysis on sum of weight of trash from prof tras wheel and count of cig butts from gwynnda in July of 2021.
+
+Finished the code for the homework through problem 3, and made sure knitting worked properly. I was not able to use inline R code in order to knit properly. A new csv was saved to the data folder for the 'mci_combined' dataset generated in problem #3. 
+
+Homework 2 is complete.
