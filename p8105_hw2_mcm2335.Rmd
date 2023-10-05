@@ -103,7 +103,9 @@ combined_data_final =
 ```
 
 ## Answer 
-The `pols_month_final` dataset has `r nrow(pols_month_final)` observations and `r ncol(pols_month_final)` variables and indicates the political affiliation of presidents from `r pols |> pull(year) |> min()` to `r pols |> pull(year) |> max()` and the distribution of governers and senators by political affiliation. The `snp_final` dataset has `r nrow(snp_final)` observations and `r ncol(snp_final)` variables and has close information by month and year from `r pols |> pull(year) |> min()` to `r pols |> pull(year) |> max()`. The `unemployment_final` dataset has `r nrow(unemployment_final)` observations and `r ncol(unemployment_final)` variables and provides national unemployment rates by month and year from `r pols |> pull(year) |> min()` to `r pols |> pull(year) |> max()`. The `combined_data_final` dataset merges all of these variables by month and year and has 53 total NAs.
+Note: I did not use inline R code for this answer, as I am unable to knit when using inline R code. 
+
+The 'pols_month_final' dataset has 822 observations and 9 variables and indicates the political affiliation of presidents by month and year from 1947 to 2015 and the distribution of governors and senators by political affiliation. The 'snp_final' dataset has 787 observations and 3 variables and has 'close' information by month and year from 1950 to 2015. The 'unemployment_final' dataset has 816 observations and 3 variables and provides national unemployment rates by month and year from 1948 to 2015. The 'combined_data_final' dataset merges all of these variables by month and year and has 822 observations, 11 variables, and 53 total NAs.
 
 ## Question 2 
 
@@ -153,4 +155,62 @@ cigbutts <- trash_wheel_combined |>
 
 ```
 
+## Question 2 Answer
+Note: I did not use inline R code for this answer, as I am unable to knit when using inline R code.
+
+The mr_trash_wheel dataset has 584 observations of 15 variables. The professor_trash_wheel dataset has 106 observations and 15 variables. The gwynnda_trash_wheel dataset has 155 observations and 14 variables. Each dataset had variables 'dumpster,' 'month,' 'year,' 'date,' 'weight_tons' (representing weight of trash collected in tons), 'volumbe_cubic_yards,' (of trash collected), 'plastic_bottles' (collected in trash), 'polystyrene' (collected in trash), 'cigarette_buts' (collected in trash), 'glass bottles' (collected in trash), 'plastic_bags' (collected in trash), 'wrappers' (collected in trash), and 'homes_powered', a variable representing how many homes could be powered in a day by the trash collected if each ton generated 500 kilowatts of energy and each home required 30 kilowatts per day. As some dumpsters were missing this calculation, I mutated a new variable 'homes_powered_new' using this equation: (weight_tons*500)/30. Finally, I mutated a source variable for each dataset representing where the data came from for merging. Only the gwynnda_trash_wheel dataset did not have the variable 'glass_bottles', and thus every observation from the gwynnda source in the merged dataset has an NA value for this variable. The final merged dataset has 845 observations and 15 variables.
+
+As for the analysis, the total weight of trash collected by Professor Trash Wheel was 216 tons. The total count of cigarette butts collected by Gwynnda in July 2021 was 16,300 cigarette butts.
+
 ## Question 3
+
+## Import  CSVs 
+```{r}
+mci_baseline = read_csv(file = "./data/MCI_baseline.csv", skip = 1) |> #originally 483 participants
+  janitor::clean_names() |>
+  transform(id = as.character(id)) |>
+  mutate(sex = if_else(sex == 0, "Female", if_else(sex == 1, "Male", NA_character_))) |>
+  mutate(apoe4 = if_else(apoe4 == 0, "Non-Carrier", if_else(apoe4 == 1, "Carrier", NA_character_))) |>
+  filter(age_at_onset != ".")# skipped first row which was metadata #97 participants after filtering out individuals without MCI at follow up
+
+
+mci_amyloid = read_csv(file = "./data/mci_amyloid.csv", skip = 1) |> #487 participants originally
+  janitor::clean_names() |>
+  rename(id = study_id) |>
+  transform(id = as.character(id))
+# skipped first row which was metadata
+```
+## Merge Datasets
+```{r}
+mci_combined <- inner_join(mci_baseline, mci_amyloid, by = "id")
+```
+
+## Save CSV to data folder
+```{r}
+write.csv(mci_combined, file = "/Users/robynrehak/Desktop/R_Building_Blocks_P8105/p8105_hw2_mcm2335/mci_combined.csv", row.names = FALSE)
+```
+
+## Analysis
+```{r}
+#97/483 #20.08% developed MCI
+
+avg_age_baseline <- mean(mci_baseline$current_age) #65.61
+
+female <- mci_baseline |>
+  filter(sex == "Female")
+
+table(female$apoe4) #46 in total, #30 carriers, #16 non carriers
+#30/46 #65.22%
+#16/46 #34.78%
+```
+## Question 3 Answer
+Note: I did not use inline R code for this answer, as I am unable to knit when using inline R code.
+
+When importing both my mci_baseline and mci_amyloid datasets, it was important to add the parameter in my 'read_csv' function to skip the first row of both datasets, as this row contained metadata in the csv files and not actual observations or column names. After importing the csv files, I cleaned the variable names and converted the 'id' variable to a character vector for consistency across the two datasets to help with merging later on. Then, for the 'mci_baseline' dataset, I used the metadata of the csv to convert the numeric '1' and '0' values to 'Female' and 'Male' character values for the 'sex' variable, and to 'Carrier' or 'Non-carrier' character values respectively for the 'apoe4' variable. To remove individuals without MCI at follow up, I filtered all individuals with the "." value for 'age_at_onset' out of the final dataset for mci_baseline. For mci_amyloid, I renamed the variable 'study_id' to 'id' and converted it to a character value in order to merge the dataset with mci_baseline. I merged the two datasets using the 'inner_join' function with the common 'id' variable to remove any participants that were not included in both datasets. 'Mci_baseline' after tidying has 97 observations and 6 variables, including variables for ID, age at baseline, sex, education level, carrier status for apoe4, and current age while 'Mci_amyloid' after tidying has 487 observations and 6 variables and included information on the biomarker amyloid B 42/40 ratio at baseline, as well as 2, 4, 6, and 8 years after baseline. The final dataset had 11 variables, as 'id' was merged. 
+
+In terms of the analysis, 483 participants were originally included in the mci_baseline dataset, and after excluding individuals free of MCI at follow-up, 97 participants remained, meaning 97 participants developed MCI. After merging mci_baseline and mci_amyloid, only 94 participants remained, meaning that 3 participants with MCI in the mci_baseline dataset did not exist in the mci_amyloid dataset, and that mci_amyloid had 393 participants not in the mci_baseline dataset. 
+
+The average baseline age for individuals who developed MCI in the mci_baseline dataset was 65.61 years. 65.22% of individuals who developed MCI were carriers for apoe4. 
+
+The final combined dataset was saved as a csv in the data folder.
+
